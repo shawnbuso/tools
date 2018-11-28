@@ -16,7 +16,8 @@ SHA     := $(shell git rev-parse --short HEAD)
 DATE    := $(shell TZ=UTC date +%FT%T)Z
 VERSION := $(shell cat VERSION)-$(DATE)-$(SHA)
 
-OUTDIR := ./bin
+OUTDIRNAME := bin
+OUTDIR := ./$(OUTDIRNAME)
 OUTRELEASE := gs://claat
 RELEASES=$(OUTDIR)/claat-darwin-amd64 \
 	 $(OUTDIR)/claat-linux-amd64 \
@@ -32,6 +33,14 @@ $(OUTDIR)/claat: $(SRCS) VERSION
 release: $(RELEASES)
 	echo $(VERSION) > $(OUTDIR)/VERSION
 	cd $(OUTDIR) && sha1sum claat-* > sha1sum.txt
+
+server: $(OUTDIR)/claat
+	mkdir -p $(OUTDIR)/deps
+	cd ../codelab-elements; \
+	    bazel build :bundle; \
+	    mv -f bazel-genfiles/bundle.zip ../claat/$(OUTDIRNAME)/deps
+	unzip -o $(OUTDIR)/deps/bundle.zip -d $(OUTDIR)/deps/codelab-elements
+	cd bin; ./claat serve
 
 test: .test
 .test: $(SRCS)
