@@ -24,7 +24,6 @@ import (
 // CmdServe is the "claat serve ..." subcommand.
 // addr is the hostname and port to bind the web server to.
 func CmdServe(addr string) {
-	CmdBuild()
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	log.Printf("Serving codelabs on %s, opening browser tab now...", addr)
 	ch := make(chan error, 1)

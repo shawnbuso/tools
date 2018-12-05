@@ -75,8 +75,6 @@ func main() {
 		})
 	case "serve":
 		cmd.CmdServe(*addr)
-	case "build":
-		cmd.CmdBuild()
 	case "update":
 		cmd.CmdUpdate(cmd.CmdUpdateOptions{
 			AuthToken: *authToken,
